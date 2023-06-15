@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/tetris_api.props" />
+</Project>
