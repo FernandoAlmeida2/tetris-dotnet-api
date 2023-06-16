@@ -1,20 +1,50 @@
-using tetris_api.Models;
+
+
+using Microsoft.EntityFrameworkCore;
 using tetris_api.Data;
+using tetris_api.Models;
+using tetris_api.Repositories.Interfaces;
 
 namespace tetris_api.Repositories
 {
-    public class ResultRepository
+    public class ResultRepository : IResultRepository
     {
-        private readonly ConnectionContext _context = new ConnectionContext();
-        public void save(ResultModel resultModel)
+        private readonly ResultContext _context;
+
+        public ResultRepository(ResultContext context)
         {
-            _context.Results.Add(resultModel);
-            _context.SaveChanges();
+            this._context = context;
+        }
+        public async Task<IEnumerable<ResultModel>> findAll()
+        {
+            return await _context.Results.OrderByDescending(i => i.score)
+                .ThenByDescending(i => i.speed)
+                .ToListAsync();
         }
 
-        public List<ResultModel> GetAll()
+        public async Task<ResultModel>? findOne(int id)
         {
-            return _context.Results.ToList();
+            var response = await _context.Results.Where(i => i.id == id).FirstOrDefaultAsync();
+            return response;
+        }
+
+        public void save(ResultModel resultModel)
+        {
+            _context.Add(resultModel);
+        }
+
+        public void update(ResultModel resultModel)
+        {
+            throw new NotImplementedException();
+        }
+        public void delete(ResultModel resultModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
