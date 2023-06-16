@@ -20,7 +20,7 @@ namespace tetris_api.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await _repository.findOne(id);
@@ -32,8 +32,33 @@ namespace tetris_api.Controllers
         {
             _repository.save(resultModel);
             return await _repository.SaveChangesAsync()
-            ? Ok("Usuário adicionado com sucesso!")
-            : BadRequest("Erro ao salvar o usuário");
+            ? Content("Result added succesfully!")
+            : BadRequest("Save result error");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, ResultModel resultModel)
+        {
+            var result = await _repository.findOne(id);
+            if(result == null) return NotFound("Result not found");
+            result.name = resultModel.name;
+            result.score = resultModel.score;
+            result.speed= resultModel.speed;
+            _repository.update(result);
+            return await _repository.SaveChangesAsync()
+            ? Content("Result updated succesfully!")
+            : BadRequest("Update result error");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _repository.findOne(id);
+            if(result == null) return NotFound("Result not found");
+            _repository.delete(result);
+            return await _repository.SaveChangesAsync()
+            ? Content("Result deleted succesfully!")
+            : BadRequest("Delete result error");
         }
     }
 }

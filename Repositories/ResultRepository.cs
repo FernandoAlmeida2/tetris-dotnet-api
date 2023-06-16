@@ -22,10 +22,9 @@ namespace tetris_api.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ResultModel>? findOne(int id)
+        public async Task<ResultModel> findOne(int id)
         {
-            var response = await _context.Results.Where(i => i.id == id).FirstOrDefaultAsync();
-            return response;
+            return await _context.Results.Where(i => i.id == id).FirstOrDefaultAsync();
         }
 
         public void save(ResultModel resultModel)
@@ -35,11 +34,11 @@ namespace tetris_api.Repositories
 
         public void update(ResultModel resultModel)
         {
-            throw new NotImplementedException();
+            _context.Update(resultModel);
         }
         public void delete(ResultModel resultModel)
         {
-            throw new NotImplementedException();
+            _context.Remove(resultModel);
         }
 
         public async Task<bool> SaveChangesAsync()
